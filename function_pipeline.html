@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Function Pipeline</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1 {
+            color: #007BFF;
+        }
+        #pipelineResult {
+            margin-top: 20px;
+            padding: 15px;
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            max-width: 300px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .function-button {
+            padding: 10px 15px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .function-button:hover {
+            background-color: #218838;
+        }
+        #inputValue {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 10px;
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Function Pipeline</h1>
+    <input type="number" id="inputValue" placeholder="Enter a number" />
+    <button class="function-button" onclick="executePipeline()">Execute Pipeline</button>
+    <div id="pipelineResult"></div>
+
+    <script>
+        const pipe = (...fns) => (initialValue) =>
+            fns.reduce((acc, fn) => fn(acc), initialValue);
+
+        const addOne = x => x + 1;
+        const multiplyByTwo = x => x * 2;
+        const subtractThree = x => x - 3;
+
+        const executePipeline = () => {
+            const inputValue = parseInt(document.getElementById('inputValue').value);
+            if (isNaN(inputValue)) {
+                alert('Please enter a valid number!');
+                return;
+            }
+            const pipeline = pipe(addOne, multiplyByTwo, subtractThree);
+            const result = pipeline(inputValue);
+            document.getElementById('pipelineResult').textContent += `Input: ${inputValue}, Result: ${result}\n`;
+            document.getElementById('inputValue').value = ''; 
+        };
+    </script>
+
+</body>
+</html>

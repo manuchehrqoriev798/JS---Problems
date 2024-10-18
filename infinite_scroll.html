@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinite Scroll Implementation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f8f8;
+        }
+        #itemList {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .item {
+            background: #ffffff;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        #sentinel {
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Infinite Scroll Implementation</h1>
+    <div id="itemList"></div>
+    <div id="sentinel"></div>
+
+    <script>
+        const infiniteScroll = () => {
+            const itemList = document.getElementById('itemList');
+            const sentinel = document.getElementById('sentinel');
+            
+            const loadMoreItems = () => {
+                for (let i = 0; i < 10; i++) {
+                    const newItem = document.createElement('div');
+                    newItem.className = 'item';
+                    newItem.textContent = `Item ${itemList.children.length + 1}`;
+                    itemList.appendChild(newItem);
+                }
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    loadMoreItems();
+                }
+            });
+
+            observer.observe(sentinel);
+            loadMoreItems();
+        };
+
+        infiniteScroll();
+    </script>
+
+</body>
+</html>

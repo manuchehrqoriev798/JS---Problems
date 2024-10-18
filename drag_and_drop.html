@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Drag and Drop UI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #007BFF;
+        }
+        .draggable {
+            width: 100px;
+            height: 100px;
+            background-color: lightblue;
+            margin: 5px;
+            display: inline-block;
+            cursor: grab;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .draggable.dragging {
+            opacity: 0.5;
+        }
+        .container {
+            width: 300px;
+            min-height: 100px;
+            background-color: lightgrey;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px dashed #007BFF;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
+        .container:hover {
+            border-color: #0056b3;
+        }
+        .container.placeholder {
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Enhanced Drag and Drop UI</h1>
+    
+    <div class="container" id="container1">
+        <div class="draggable" draggable="true">Drag me 1</div>
+        <div class="draggable" draggable="true">Drag me 2</div>
+    </div>
+
+    <div class="container" id="container2">
+        <div class="draggable" draggable="true">Drag me 3</div>
+        <div class="draggable" draggable="true">Drag me 4</div>
+    </div>
+
+    <div class="container" id="container3">
+        <div class="draggable" draggable="true">Drag me 5</div>
+    </div>
+
+    <script>
+        const dragAndDrop = () => {
+            const draggables = document.querySelectorAll('.draggable');
+            const containers = document.querySelectorAll('.container');
+
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', () => {
+                    draggable.classList.add('dragging');
+                });
+
+                draggable.addEventListener('dragend', () => {
+                    draggable.classList.remove('dragging');
+                });
+            });
+
+            containers.forEach(container => {
+                container.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    const afterElement = getDragAfterElement(container, e.clientY);
+                    const draggable = document.querySelector('.dragging');
+
+                    if (afterElement) {
+                        container.insertBefore(draggable, afterElement);
+                    } else {
+                        container.appendChild(draggable);
+                    }
+                });
+
+                container.addEventListener('dragleave', () => {
+                    container.classList.remove('placeholder');
+                });
+
+                container.addEventListener('dragenter', () => {
+                    container.classList.add('placeholder');
+                });
+            });
+
+            const getDragAfterElement = (container, y) => {
+                const draggableElements = [...container.querySelectorAll('.draggable')];
+                return draggableElements.reduce((closest, child) => {
+                    const box = child.getBoundingClientRect();
+                    const offset = y - box.top - box.height / 2;
+                    if (offset < 0 && offset > closest.offset) {
+                        return { offset: offset, element: child };
+                    } else {
+                        return closest;
+                    }
+                }, { offset: Number.NEGATIVE_INFINITY }).element;
+            };
+        };
+
+        dragAndDrop();
+    </script>
+
+</body>
+</html>

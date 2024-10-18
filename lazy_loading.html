@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lazy Loading of Images</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        .image-container {
+            margin: 20px auto;
+            display: inline-block;
+            width: 300px;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f0f0f0;
+        }
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Lazy Loading of Images</h1>
+    <div class="image-container">
+        <span class="loading">Loading...</span>
+        <img data-src="./meme.jpeg" alt="Lazy loaded image">
+    </div>
+    <div class="image-container">
+        <span class="loading">Loading...</span>
+        <img data-src="./meme.jpeg" alt="Lazy loaded image">
+    </div>
+    <div class="image-container">
+        <span class="loading">Loading...</span>
+        <img data-src="./meme.jpeg" alt="Lazy loaded image">
+    </div>
+
+    <script>
+        const lazyLoadImages = () => {
+            const images = document.querySelectorAll('img[data-src]');
+            const imgObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        const loadingText = img.previousElementSibling;
+                        img.src = img.dataset.src;
+                        loadingText.style.display = 'none';
+                        img.onload = () => img.classList.add('loaded');
+                        imgObserver.unobserve(img);
+                    }
+                });
+            });
+            images.forEach(img => {
+                imgObserver.observe(img);
+            });
+        };
+        lazyLoadImages();
+    </script>
+
+</body>
+</html>
